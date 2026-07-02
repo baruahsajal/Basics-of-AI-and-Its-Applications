@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sajal Baruah - AI Internship 3D Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --secondary: #bc13fe;
+            --dark: #05050a;
+            --darker: #020205;
+            --light: #e0e0ff;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --page-bg: #0d0d1a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--dark); overflow: hidden; position: relative; }
+        
+        .glow-1 { position: fixed; width: 600px; height: 600px; background: var(--secondary); top: -250px; left: -250px; border-radius: 50%; filter: blur(160px); opacity: 0.25; z-index: -1; }
+        .glow-2 { position: fixed; width: 500px; height: 500px; background: var(--primary); bottom: -200px; right: -200px; border-radius: 50%; filter: blur(160px); opacity: 0.25; z-index: -1; }
+
+        .viewport { flex: 1; display: flex; justify-content: center; align-items: center; perspective: 2000px; width: 100%; padding: 20px; }
+        .book { position: relative; width: 450px; height: 580px; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); transform-style: preserve-3d; }
+        
+        .paper { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform-style: preserve-3d; transform-origin: left center; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
+        .front, .back { position: absolute; width: 100%; height: 100%; top: 0; left: 0; backface-visibility: hidden; background: var(--page-bg); border: 1px solid var(--glass-border); padding: 3rem 2.5rem; display: flex; flex-direction: column; box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6), 0 10px 25px rgba(0, 0, 0, 0.5); }
+        .front { border-radius: 0 15px 15px 0; border-left: 3px solid var(--primary); }
+        .back { transform: rotateY(180deg); border-radius: 15px 0 0 15px; border-right: 3px solid var(--secondary); }
+        .paper.flipped { transform: rotateY(-180deg); }
+
+        h1.cover-title { font-size: 2.4rem; font-weight: 700; background: linear-gradient(135deg, #fff 30%, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; line-height: 1.3; margin-top: 1.5rem; }
+        h2.section-heading { font-size: 1.6rem; color: var(--primary); margin-bottom: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(0, 243, 255, 0.15); padding-bottom: 0.5rem; }
+        h3.sub-heading { font-size: 1.1rem; color: var(--secondary); margin-top: 0.8rem; margin-bottom: 0.4rem; font-weight: 500; }
+        p.body-text { font-size: 0.95rem; color: #a0a0ba; line-height: 1.6; margin-bottom: 0.8rem; text-align: justify; }
+        ul.list-content { list-style: none; margin-bottom: 1rem; }
+        ul.list-content li { font-size: 0.9rem; color: #b5b5cc; margin-bottom: 0.6rem; position: relative; padding-left: 20px; line-height: 1.5; }
+        ul.list-content li::before { content: "➔"; position: absolute; left: 0; color: var(--primary); font-size: 0.8rem; }
+        .accent-box { background: rgba(188, 19, 254, 0.06); border: 1px solid rgba(188, 19, 254, 0.2); border-radius: 8px; padding: 0.8rem; margin: 0.8rem 0; font-size: 0.85rem; color: #d0c0f0; }
+        
+        .media-slot { width: 100%; height: 190px; background: #020205; border: 1px solid var(--glass-border); border-radius: 8px; margin: 0.8rem 0; overflow: hidden; position: relative; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        
+        .page-tag { position: absolute; bottom: 15px; font-size: 0.75rem; font-weight: 600; color: #555577; letter-spacing: 1px; }
+        .front .page-tag { right: 25px; } .back .page-tag { left: 25px; }
+
+        .control-bar { width: 100%; background: rgba(2, 2, 5, 0.8); border-top: 1px solid var(--glass-border); padding: 1.2rem 3rem; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); z-index: 10; }
+        .nav-btn { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 0.6rem 1.8rem; border-radius: 4px; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
+        .nav-btn:hover { background: var(--primary); color: var(--darker); box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
+        .nav-btn:disabled { border-color: #222233; color: #222233; cursor: not-allowed; box-shadow: none; background: transparent; }
+        .status-indicator { font-size: 0.9rem; color: #777799; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="glow-1"></div><div class="glow-2"></div>
+    <div class="viewport">
+        <div class="book" id="presentationBook">
+            
+            <div class="paper" id="sheet1" style="z-index: 5;">
+                <div class="front" style="background: linear-gradient(145deg, #090915, #120520); justify-content: center; align-items: center;">
+                    <i class="fas fa-cubes" style="font-size: 2.2rem; color: var(--primary);"></i>
+                    <h1 class="cover-title">Basics of AI &<br>Its Applications</h1>
+                    <div style="width: 40px; height: 2px; background: var(--secondary); margin: 1.5rem 0;"></div>
+                    <p style="color: #666688; font-size: 0.8rem; margin-top: 4rem;">Prepared By</p>
+                    <p style="color: #fff; font-weight: 600; font-size: 1.1rem;">Sajal Baruah</p>
+                    <p style="color: var(--primary); font-size: 0.8rem;">Gauhati University</p>
+                </div>
+                <div class="back">
+                    <h2 class="section-heading"><i class="fas fa-user-astronaut"></i> The Presenter</h2>
+                    <h3 class="sub-heading">Academic Profile</h3>
+                    <ul class="list-content">
+                        <li><strong>Institution:</strong> Gauhati University, Assam</li>
+                        <li><strong>Degree Path:</strong> Bachelor of Science (B.Sc.)</li>
+                        <li><strong>Focus Fields:</strong> Physics Major / Mathematics Minor</li>
+                    </ul>
+                    <p class="body-text">This unique intersection enables structural modeling of artificial neural pathways mapping parameters exactly onto physical optimization properties.</p>
+                    <div class="page-tag">P. 1</div>
+                </div>
+            </div>
+
+            <div class="paper" id="sheet2" style="z-index: 4;">
+                <div class="front">
+                    <h2 class="section-heading"><i class="fas fa-calculator"></i> The Math Engine</h2>
+                    <p class="body-text">Neural networks map data into multi-dimensional arrays, optimizing weights through matrix calculations:</p>
+                    <ul class="list-content">
+                        <li><strong>Linear Algebra:</strong> Weights and matrices are multiplied to extract transformations.</li>
+                        <li><strong>Differential Calculus:</strong> Gradient calculations evaluate error changes.</li>
+                        <li><strong>Probability Distributions:</strong> Softmax vectors map outputs into probabilities.</li>
+                    </ul>
+                    <div class="page-tag">P. 2</div>
+                </div>
+                <div class="back">
+                    <h2 class="section-heading"><i class="fas fa-atom"></i> The Physics Mirror</h2>
+                    <p class="body-text">Machine learning optimizations are closely linked with thermodynamic mechanics and numerical analysis approaches:</p>
+                    <ul class="list-content">
+                        <li><strong>Energy-Based Models:</strong> Finding the lowest error value mirrors physical systems seeking equilibrium.</li>
+                        <li><strong>Numerical Approximations:</strong> Align directly with step-size updates in differential equation solvers.</li>
+                    </ul>
+                    <div class="page-tag">P. 3</div>
+                </div>
+            </div>
+
+            <div class="paper" id="sheet3" style="z-index: 3;">
+                <div class="front">
+                    <h2 class="section-heading"><i class="fas fa-video"></i> Chatbot Demonstration</h2>
+                    <p class="body-text">Real-time execution verifying natural conversational classification loops:</p>
+                    <div class="media-slot">
+                        <video controls preload="metadata" poster="https://via.placeholder.com/450x200/0d0d1a/00f3ff?text=Conversational+AI+Interface">
+                            <source src="assets/chatbot_demo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="page-tag">P. 4</div>
+                </div>
+                <div class="back">
+                    <h2 class="section-heading"><i class="fas fa-chart-line"></i> Text Metrics</h2>
+                    <p class="body-text">The transformed text matrices are passed into a Logistic Regression setup to classify expressions.</p>
+                    <h3 class="sub-heading">Pipeline Highlights</h3>
+                    <ul class="list-content">
+                        <li>Optimized for high-volume textual data.</li>
+                        <li>Saves binary classification states into serialized pickle files.</li>
+                    </ul>
+                    <div class="page-tag">P. 5</div>
+                </div>
+            </div>
+
+            <div class="paper" id="sheet4" style="z-index: 2;">
+                <div class="front">
+                    <h2 class="section-heading"><i class="fas fa-sliders-h"></i> LSTM Demonstration</h2>
+                    <p class="body-text">Real-time model predicting complex stock value alterations:</p>
+                    <div class="media-slot">
+                        <video controls preload="metadata" poster="https://via.placeholder.com/450x200/0d0d1a/bc13fe?text=LSTM+Time-Series+Analysis">
+                            <source src="assets/stock_demo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <p class="body-text">Parsed via yFinance, scaled smoothly, and output mapped via Matplotlib.</p>
+                    <div class="page-tag">P. 6</div>
+                </div>
+                <div class="back">
+                    <h2 class="section-heading"><i class="fas fa-flask"></i> Scientific Computing</h2>
+                    <p class="body-text">Development relies heavily on the core scientific Python ecosystem:</p>
+                    <ul class="list-content">
+                        <li><strong>NumPy:</strong> Drives rapid matrix operations.</li>
+                        <li><strong>Pandas:</strong> Handles structural formatting.</li>
+                        <li><strong>Matplotlib:</strong> Manages complex error plotting.</li>
+                    </ul>
+                    <div class="page-tag">P. 7</div>
+                </div>
+            </div>
+
+            <div class="paper" id="sheet5" style="z-index: 1;">
+                <div class="front">
+                    <h2 class="section-heading"><i class="fas fa-graduation-cap"></i> Core Takeaways</h2>
+                    <p class="body-text">This internship successfully mapped mathematical logic into operational software.</p>
+                    <ul class="list-content">
+                        <li>Developed a functional understanding of ML loops.</li>
+                        <li>Managed end-to-end data preparation pipelines.</li>
+                    </ul>
+                    <div class="accent-box">
+                        <strong>Next Steps:</strong> Exploring physics-informed neural network models (PINNs).
+                    </div>
+                    <div class="page-tag">P. 8</div>
+                </div>
+                <div class="back" style="background: linear-gradient(145deg, #090915, #120520); justify-content: center; align-items: center;">
+                    <i class="fas fa-certificate" style="font-size: 3.5rem; color: var(--secondary); margin-bottom: 1.5rem;"></i>
+                    <h1 style="font-size: 2.2rem; text-align: center; color: #fff;">Thank You</h1>
+                    <div style="margin-top: 4rem; text-align: center;">
+                        <p style="font-size: 0.8rem; color: #555577;">Sajal Baruah Portfolio</p>
+                        <p style="font-size: 0.75rem; color: #444466;">baruahsajal.github.io</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="control-bar">
+        <button class="nav-btn" id="prevBtn" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+        <div class="status-indicator">Sheet <span id="sheetIndex">1</span> / 5</div>
+        <button class="nav-btn" id="nextBtn">Next <i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <script>
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const book = document.getElementById('presentationBook');
+        const sheetIndexIndicator = document.getElementById('sheetIndex');
+        const sheets = [ document.getElementById('sheet1'), document.getElementById('sheet2'), document.getElementById('sheet3'), document.getElementById('sheet4'), document.getElementById('sheet5') ];
+        
+        let currentSheet = 1;
+        const totalSheets = sheets.length;
+
+        prevBtn.addEventListener("click", () => {
+            if (currentSheet > 1) {
+                currentSheet--;
+                const active = sheets[currentSheet - 1];
+                active.classList.remove("flipped");
+                setTimeout(() => { active.style.zIndex = totalSheets - (currentSheet - 1); }, 100);
+                updateUI();
+            }
+        });
+
+        nextBtn.addEventListener("click", () => {
+            if (currentSheet < totalSheets + 1) {
+                const active = sheets[currentSheet - 1];
+                active.classList.add("flipped");
+                setTimeout(() => { active.style.zIndex = currentSheet; }, 300);
+                currentSheet++;
+                updateUI();
+            }
+        });
+
+        function updateUI() {
+            prevBtn.disabled = currentSheet === 1;
+            nextBtn.disabled = currentSheet === totalSheets + 1;
+            
+            if (currentSheet === 1) { book.style.transform = "translateX(0%)"; sheetIndexIndicator.innerText = "1"; }
+            else if (currentSheet === totalSheets + 1) { book.style.transform = "translateX(50%)"; sheetIndexIndicator.innerText = totalSheets; }
+            else { book.style.transform = "translateX(25%)"; sheetIndexIndicator.innerText = currentSheet - 1; }
+            
+            document.querySelectorAll('video').forEach(v => v.pause());
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextBtn.click();
+            else if (e.key === 'ArrowLeft') prevBtn.click();
+        });
+    </script>
+</body>
+</html>
