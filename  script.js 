@@ -1,17 +1,20 @@
-// Mobile Navigation
+// Mobile Navigation Toggle
 const hamburger = document.querySelector('.hamburger');
 const navLinks = document.querySelector('.nav-links');
 
-hamburger.addEventListener('click', () => {
-    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-    navLinks.style.position = 'absolute';
-    navLinks.style.top = '100%';
-    navLinks.style.left = '0';
-    navLinks.style.right = '0';
-    navLinks.style.flexDirection = 'column';
-    navLinks.style.background = 'rgba(10, 10, 10, 0.95)';
-    navLinks.style.padding = '2rem';
-});
+if (hamburger) {
+    hamburger.addEventListener('click', () => {
+        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        navLinks.style.position = 'absolute';
+        navLinks.style.top = '100%';
+        navLinks.style.left = '0';
+        navLinks.style.right = '0';
+        navLinks.style.flexDirection = 'column';
+        navLinks.style.background = 'rgba(5, 5, 10, 0.95)';
+        navLinks.style.padding = '2rem';
+        navLinks.style.borderBottom = '1px solid rgba(255, 255, 255, 0.08)';
+    });
+}
 
 // Smooth scroll for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -27,7 +30,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Animate progress bars on scroll
+// Animate progress bars on scroll for the Skills section
 const observerOptions = {
     threshold: 0.5
 };
@@ -41,7 +44,7 @@ const observer = new IntersectionObserver((entries) => {
                 bar.style.width = '0';
                 setTimeout(() => {
                     bar.style.width = width;
-                }, 100);
+                }, 150);
             });
         }
     });
@@ -49,13 +52,4 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.skill-card').forEach(card => {
     observer.observe(card);
-});
-
-// Add parallax effect to hero
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    if (hero) {
-        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-    }
 });
