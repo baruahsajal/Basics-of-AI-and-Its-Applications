@@ -1,70 +1,25 @@
-# 🤖 AI Internship Portfolio — Basics of AI & Its Applications
+# 🤖 AI Internship Portfolio | Sajal Baruah
 
-> **Internship Presentation | 2026**  
-> A curated collection of hands-on AI projects demonstrating core concepts 
-> from classical ML to modern deep learning and generative AI.
+> **Internship Presentation & Live Models | 2026**
 
----
+I am currently pursuing a **B.Sc. Physics Major and Mathematics Minor** at **Gauhati University**. This repository serves as the live portfolio and source code directory for my internship presentation on the **"Basics of AI and its Applications."**
 
-## 👋 About This Portfolio
+By bridging the gap between classical scientific computing and modern Artificial Intelligence, this project demonstrates how mathematical matrices and physical optimization properties power neural networks.
 
-This repository documents my internship journey exploring the **fundamentals of Artificial Intelligence** 
-and building practical applications across NLP, Computer Vision, and Generative AI.
+## 🚀 Live Portfolio & 3D Presentation
+**[View the Live Interactive Portfolio Here](https://baruahsajal.github.io)**
 
-### 🎯 Learning Objectives
-- Understand core AI/ML algorithms (regression, classification, neural networks)
-- Implement end-to-end ML pipelines: data → model → deployment
-- Explore real-world applications: spam detection, image recognition, sentiment analysis, chatbots
-- Practice MLOps basics: version control, reproducibility, and deployment
+## 🔧 Scientific Tech Stack
+* **Scientific Computing:** Python, NumPy, SciPy
+* **Data Visualization:** Matplotlib, Pandas
+* **Machine Learning:** TensorFlow, Keras, Scikit-Learn, NLTK
+* **Web Deployment:** HTML5, CSS3 Glassmorphism, Vanilla JS, Flask
 
----
-
-## 📂 Featured Projects
-
-| # | Project | Domain | Tech Stack | Demo |
-|---|---------|--------|------------|------|
-| 1 | [Spam Email Classifier](link-to-repo) | NLP / Classification | Python, scikit-learn, NLTK | [Live Demo](url) |
-| 2 | [Image Classifier with CNN](link-to-repo) | Computer Vision | TensorFlow, Keras, Streamlit | [Live Demo](url) |
-| 3 | [Movie Sentiment Analysis](link-to-repo) | NLP / Transformers | Hugging Face, BERT, Gradio | [Live Demo](url) |
-| 4 | [FAQ Chatbot](link-to-repo) | Conversational AI | LangChain, OpenAI API, Flask | [Live Demo](url) |
+## 📂 AI Projects Covered
+1. **Conversational AI (NLP):** Intent classification chatbot.
+2. **Computer Vision:** CNN-based image classification on CIFAR-10.
+3. **Sentiment Analysis:** TF-IDF and Logistic Regression text analyzer.
+4. **Predictive Analytics:** LSTM time-series forecasting for stock metrics.
 
 ---
-
-## 🧠 AI Fundamentals Covered
-
-| Concept | Project | Key Learning |
-|---------|---------|-------------|
-| Supervised Learning | Spam Classifier | Train/test split, overfitting, evaluation metrics |
-| Feature Engineering | All projects | TF-IDF, embeddings, data augmentation |
-| Neural Networks | Image Classifier | CNNs, backpropagation, transfer learning |
-| Transformers | Sentiment Analysis | Attention mechanism, fine-tuning BERT |
-| Generative AI | Chatbot | LLMs, prompt engineering, RAG basics |
-
----
-
-## 🛠️ Tech Stack Overview
-
-**Languages:** Python, SQL  
-**Libraries:** NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn, TensorFlow, PyTorch, Transformers  
-**Deployment:** Streamlit, Gradio, Flask, Docker  
-**Tools:** Git, GitHub Actions, Google Colab, Jupyter, VS Code
-
----
-
-## 📊 Internship Report
-
-See [`docs/internship-report.md`](docs/internship-report.md) for a detailed reflection on:
-- Daily learning logs
-- Challenges faced and solutions
-- Skills acquired and next steps
-
----
-
-## 📬 Connect With Me
-
-- LinkedIn: [your-link]
-- Email: [your-email]
-- Portfolio Website: [optional]
-
----
-*Built with ❤️ during my AI internship, 2026*
+*Developed by Sajal Baruah | 2026*
