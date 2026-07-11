@@ -3,229 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sajal Baruah - AI Internship 3D Presentation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>3D Presentation Canvas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00f3ff;
-            --secondary: #bc13fe;
-            --dark: #05050a;
-            --darker: #020205;
-            --light: #e0e0ff;
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --page-bg: #0d0d1a;
+            --book-w: 450px;
+            --book-h: 580px;
+            --page-bg: #111018;
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --text-light: #f3f1f6;
+            --text-dark: #a49fb6;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--dark); overflow: hidden; position: relative; }
-        
-        .glow-1 { position: fixed; width: 600px; height: 600px; background: var(--secondary); top: -250px; left: -250px; border-radius: 50%; filter: blur(160px); opacity: 0.25; z-index: -1; }
-        .glow-2 { position: fixed; width: 500px; height: 500px; background: var(--primary); bottom: -200px; right: -200px; border-radius: 50%; filter: blur(160px); opacity: 0.25; z-index: -1; }
 
-        .viewport { flex: 1; display: flex; justify-content: center; align-items: center; perspective: 2000px; width: 100%; padding: 20px; }
-        .book { position: relative; width: 450px; height: 580px; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); transform-style: preserve-3d; }
-        
-        .paper { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform-style: preserve-3d; transform-origin: left center; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
-        .front, .back { position: absolute; width: 100%; height: 100%; top: 0; left: 0; backface-visibility: hidden; background: var(--page-bg); border: 1px solid var(--glass-border); padding: 3rem 2.5rem; display: flex; flex-direction: column; box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6), 0 10px 25px rgba(0, 0, 0, 0.5); }
-        .front { border-radius: 0 15px 15px 0; border-left: 3px solid var(--primary); }
-        .back { transform: rotateY(180deg); border-radius: 15px 0 0 15px; border-right: 3px solid var(--secondary); }
-        .paper.flipped { transform: rotateY(-180deg); }
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #06050a;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-light);
+            overflow: hidden;
+        }
 
-        h1.cover-title { font-size: 2.4rem; font-weight: 700; background: linear-gradient(135deg, #fff 30%, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; line-height: 1.3; margin-top: 1.5rem; }
-        h2.section-heading { font-size: 1.6rem; color: var(--primary); margin-bottom: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(0, 243, 255, 0.15); padding-bottom: 0.5rem; }
-        h3.sub-heading { font-size: 1.1rem; color: var(--secondary); margin-top: 0.8rem; margin-bottom: 0.4rem; font-weight: 500; }
-        p.body-text { font-size: 0.95rem; color: #a0a0ba; line-height: 1.6; margin-bottom: 0.8rem; text-align: justify; }
-        ul.list-content { list-style: none; margin-bottom: 1rem; }
-        ul.list-content li { font-size: 0.9rem; color: #b5b5cc; margin-bottom: 0.6rem; position: relative; padding-left: 20px; line-height: 1.5; }
-        ul.list-content li::before { content: "➔"; position: absolute; left: 0; color: var(--primary); font-size: 0.8rem; }
-        .accent-box { background: rgba(188, 19, 254, 0.06); border: 1px solid rgba(188, 19, 254, 0.2); border-radius: 8px; padding: 0.8rem; margin: 0.8rem 0; font-size: 0.85rem; color: #d0c0f0; }
-        
-        .media-slot { width: 100%; height: 190px; background: #020205; border: 1px solid var(--glass-border); border-radius: 8px; margin: 0.8rem 0; overflow: hidden; position: relative; }
-        video { width: 100%; height: 100%; object-fit: cover; }
-        
-        .page-tag { position: absolute; bottom: 15px; font-size: 0.75rem; font-weight: 600; color: #555577; letter-spacing: 1px; }
-        .front .page-tag { right: 25px; } .back .page-tag { left: 25px; }
+        /* 3D Viewport Configuration */
+        .scene {
+            width: calc(var(--book-w) * 2);
+            height: var(--book-h);
+            perspective: 2000px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-        .control-bar { width: 100%; background: rgba(2, 2, 5, 0.8); border-top: 1px solid var(--glass-border); padding: 1.2rem 3rem; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); z-index: 10; }
-        .nav-btn { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 0.6rem 1.8rem; border-radius: 4px; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
-        .nav-btn:hover { background: var(--primary); color: var(--darker); box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
-        .nav-btn:disabled { border-color: #222233; color: #222233; cursor: not-allowed; box-shadow: none; background: transparent; }
-        .status-indicator { font-size: 0.9rem; color: #777799; font-weight: 500; }
+        /* 3D Book Layout Shell */
+        .book {
+            position: relative;
+            width: var(--book-w);
+            height: var(--book-h);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            /* Shift book to middle right to accommodate opened orientation symmetry */
+            transform: translateX(50%);
+        }
+
+        /* Base Individual Page Layer Architecture */
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        /* Front Face & Back Face Configuration inside 3D sheets */
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: var(--page-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 35px;
+            box-sizing: border-box;
+            backface-visibility: hidden;
+            overflow-y: auto;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .back {
+            transform: rotateY(180deg);
+            border-radius: 12px 0 0 12px;
+            background: #14131e;
+        }
+
+        /* CSS States controlling turning mechanics */
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* Typography Styling Inside Presentation pages */
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            margin-top: 0;
+            letter-spacing: 1px;
+        }
+        h1 { font-size: 1.8rem; color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0,243,255,0.3); }
+        h2 { font-size: 1.4rem; color: var(--neon-purple); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        p, li { font-size: 0.95rem; line-height: 1.6; color: var(--text-dark); }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        
+        /* Specialized Structural Embed Container Elements */
+        .media-slot {
+            width: 100%;
+            height: 340px; 
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255,243,255,0.15);
+            background: #000;
+        }
+        .media-slot iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Interactive Interface Button Overlays */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+        .btn-nav {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 10px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .btn-nav:hover {
+            background: rgba(0, 243, 255, 0.15);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .math-block {
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid var(--neon-cyan);
+            padding: 12px;
+            margin: 12px 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
-    <div class="glow-1"></div><div class="glow-2"></div>
-    <div class="viewport">
-        <div class="book" id="presentationBook">
+
+    <div class="scene">
+        <div class="book" id="book">
             
-            <div class="paper" id="sheet1" style="z-index: 5;">
-                <div class="front" style="background: linear-gradient(145deg, #090915, #120520); justify-content: center; align-items: center;">
-                    <i class="fas fa-cubes" style="font-size: 2.2rem; color: var(--primary);"></i>
-                    <h1 class="cover-title">Basics of AI &<br>Its Applications</h1>
-                    <div style="width: 40px; height: 2px; background: var(--secondary); margin: 1.5rem 0;"></div>
-                    <p style="color: #666688; font-size: 0.8rem; margin-top: 4rem;">Prepared By</p>
-                    <p style="color: #fff; font-weight: 600; font-size: 1.1rem;">Sajal Baruah</p>
-                    <p style="color: var(--primary); font-size: 0.8rem;">Gauhati University</p>
+            <!-- SHEET 1: Pages 1 & 2 (Cover + Introduction) -->
+            <div class="page" id="p1" style="z-index: 5;">
+                <div class="front" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+                    <h1>BASICS OF AI AND ITS APPLICATIONS</h1>
+                    <p style="color: var(--neon-purple); font-weight:700;">INTERNSHIP PRESENTATION</p>
+                    <hr style="width:50%; border:0; height:1px; background:var(--neon-cyan); margin:20px 0;">
+                    <p>Sajal Baruah<br>Dept. of Physics<br>Gauhati University</p>
                 </div>
                 <div class="back">
-                    <h2 class="section-heading"><i class="fas fa-user-astronaut"></i> The Presenter</h2>
-                    <h3 class="sub-heading">Academic Profile</h3>
-                    <ul class="list-content">
-                        <li><strong>Institution:</strong> Gauhati University, Assam</li>
-                        <li><strong>Degree Path:</strong> Bachelor of Science (B.Sc.)</li>
-                        <li><strong>Focus Fields:</strong> Physics Major / Mathematics Minor</li>
+                    <h2>1. Paradigm Shift in AI</h2>
+                    <p>Artificial Intelligence represents a functional transition from explicit deterministic programming algorithms to data-driven probabilistic optimization networks.</p>
+                    <h3>Core Concepts Evaluated:</h3>
+                    <ul>
+                        <li><strong>Supervised Learning:</strong> Mapping inputs $X$ to outputs $Y$ through calculated error gradients.</li>
+                        <li><strong>Loss Minimization:</strong> Utilizing multivariable partial derivatives to optimize computational weights via structural cost functions.</li>
                     </ul>
-                    <p class="body-text">This unique intersection enables structural modeling of artificial neural pathways mapping parameters exactly onto physical optimization properties.</p>
-                    <div class="page-tag">P. 1</div>
                 </div>
             </div>
 
-            <div class="paper" id="sheet2" style="z-index: 4;">
+            <!-- SHEET 2: Pages 3 & 4 (Project 1 & Project 2) -->
+            <div class="page" id="p2" style="z-index: 4;">
                 <div class="front">
-                    <h2 class="section-heading"><i class="fas fa-calculator"></i> The Math Engine</h2>
-                    <p class="body-text">Neural networks map data into multi-dimensional arrays, optimizing weights through matrix calculations:</p>
-                    <ul class="list-content">
-                        <li><strong>Linear Algebra:</strong> Weights and matrices are multiplied to extract transformations.</li>
-                        <li><strong>Differential Calculus:</strong> Gradient calculations evaluate error changes.</li>
-                        <li><strong>Probability Distributions:</strong> Softmax vectors map outputs into probabilities.</li>
-                    </ul>
-                    <div class="page-tag">P. 2</div>
-                </div>
-                <div class="back">
-                    <h2 class="section-heading"><i class="fas fa-atom"></i> The Physics Mirror</h2>
-                    <p class="body-text">Machine learning optimizations are closely linked with thermodynamic mechanics and numerical analysis approaches:</p>
-                    <ul class="list-content">
-                        <li><strong>Energy-Based Models:</strong> Finding the lowest error value mirrors physical systems seeking equilibrium.</li>
-                        <li><strong>Numerical Approximations:</strong> Align directly with step-size updates in differential equation solvers.</li>
-                    </ul>
-                    <div class="page-tag">P. 3</div>
-                </div>
-            </div>
-
-            <div class="paper" id="sheet3" style="z-index: 3;">
-                <div class="front">
-                    <h2 class="section-heading"><i class="fas fa-video"></i> Chatbot Demonstration</h2>
-                    <p class="body-text">Real-time execution verifying natural conversational classification loops:</p>
+                    <h2>2. Intent Classifier Chatbot</h2>
+                    <p>An intent-driven NLP conversational framework processing user parameters via text vector matching.</p>
                     <div class="media-slot">
-                        <video controls preload="metadata" poster="https://via.placeholder.com/450x200/0d0d1a/00f3ff?text=Conversational+AI+Interface">
-                            <source src="assets/chatbot_demo.mp4" type="video/mp4">
-                        </video>
+                        <iframe src="https://www.instagram.com/p/C_K9t3yS8bM/embed" allowtransparency="true" scrolling="no"></iframe>
                     </div>
-                    <div class="page-tag">P. 4</div>
                 </div>
                 <div class="back">
-                    <h2 class="section-heading"><i class="fas fa-chart-line"></i> Text Metrics</h2>
-                    <p class="body-text">The transformed text matrices are passed into a Logistic Regression setup to classify expressions.</p>
-                    <h3 class="sub-heading">Pipeline Highlights</h3>
-                    <ul class="list-content">
-                        <li>Optimized for high-volume textual data.</li>
-                        <li>Saves binary classification states into serialized pickle files.</li>
-                    </ul>
-                    <div class="page-tag">P. 5</div>
-                </div>
-            </div>
-
-            <div class="paper" id="sheet4" style="z-index: 2;">
-                <div class="front">
-                    <h2 class="section-heading"><i class="fas fa-sliders-h"></i> LSTM Demonstration</h2>
-                    <p class="body-text">Real-time model predicting complex stock value alterations:</p>
+                    <h2>3. CIFAR-10 Image Classifier</h2>
+                    <p>A deep multi-layer Convolutional Neural Network processing spatially invariant arrays across feature mappings.</p>
                     <div class="media-slot">
-                        <video controls preload="metadata" poster="https://via.placeholder.com/450x200/0d0d1a/bc13fe?text=LSTM+Time-Series+Analysis">
-                            <source src="assets/stock_demo.mp4" type="video/mp4">
-                        </video>
+                        <iframe src="https://www.instagram.com/p/C_K9t3yS8bM/embed" allowtransparency="true" scrolling="no"></iframe>
                     </div>
-                    <p class="body-text">Parsed via yFinance, scaled smoothly, and output mapped via Matplotlib.</p>
-                    <div class="page-tag">P. 6</div>
-                </div>
-                <div class="back">
-                    <h2 class="section-heading"><i class="fas fa-flask"></i> Scientific Computing</h2>
-                    <p class="body-text">Development relies heavily on the core scientific Python ecosystem:</p>
-                    <ul class="list-content">
-                        <li><strong>NumPy:</strong> Drives rapid matrix operations.</li>
-                        <li><strong>Pandas:</strong> Handles structural formatting.</li>
-                        <li><strong>Matplotlib:</strong> Manages complex error plotting.</li>
-                    </ul>
-                    <div class="page-tag">P. 7</div>
                 </div>
             </div>
 
-            <div class="paper" id="sheet5" style="z-index: 1;">
+            <!-- SHEET 3: Pages 5 & 6 (Project 3 & Project 4) -->
+            <div class="page" id="p3" style="z-index: 3;">
                 <div class="front">
-                    <h2 class="section-heading"><i class="fas fa-graduation-cap"></i> Core Takeaways</h2>
-                    <p class="body-text">This internship successfully mapped mathematical logic into operational software.</p>
-                    <ul class="list-content">
-                        <li>Developed a functional understanding of ML loops.</li>
-                        <li>Managed end-to-end data preparation pipelines.</li>
-                    </ul>
-                    <div class="accent-box">
-                        <strong>Next Steps:</strong> Exploring physics-informed neural network models (PINNs).
+                    <h2>4. TF-IDF Sentiment Analyzer</h2>
+                    <p>Transforming text inputs into sparse linear vectors to calculate mathematical sentiment coefficients.</p>
+                    <div class="media-slot">
+                        <iframe src="https://www.instagram.com/p/C_K9t3yS8bM/embed" allowtransparency="true" scrolling="no"></iframe>
                     </div>
-                    <div class="page-tag">P. 8</div>
                 </div>
-                <div class="back" style="background: linear-gradient(145deg, #090915, #120520); justify-content: center; align-items: center;">
-                    <i class="fas fa-certificate" style="font-size: 3.5rem; color: var(--secondary); margin-bottom: 1.5rem;"></i>
-                    <h1 style="font-size: 2.2rem; text-align: center; color: #fff;">Thank You</h1>
-                    <div style="margin-top: 4rem; text-align: center;">
-                        <p style="font-size: 0.8rem; color: #555577;">Sajal Baruah Portfolio</p>
-                        <p style="font-size: 0.75rem; color: #444466;">baruahsajal.github.io</p>
+                <div class="back">
+                    <h2>5. LSTM Stock Predictor</h2>
+                    <p>A specialized Recurrent Neural Network preserving continuous time-series parameters across temporal states.</p>
+                    <div class="media-slot">
+                        <iframe src="https://www.instagram.com/p/C_K9t3yS8bM/embed" allowtransparency="true" scrolling="no"></iframe>
                     </div>
+                </div>
+            </div>
+
+            <!-- SHEET 4: Pages 7 & 8 (Physics Link & Mathematics Matrix) -->
+            <div class="page" id="p4" style="z-index: 2;">
+                <div class="front">
+                    <h2>6. The Physics/AI Intersection</h2>
+                    <p>Neural networks and complex physical phenomena share equivalent computational geometries:</p>
+                    <ul>
+                        <li><strong>Energy Landscapes:</strong> Optimization tracks paths like physical systems relaxing into localized potential energy minima.</li>
+                        <li><strong>Thermodynamic Entropy:</strong> Training deep networks balances parameter configurations against generalized structural entropy equations.</li>
+                    </ul>
+                </div>
+                <div class="back">
+                    <h2>7. Mathematics of Learning</h2>
+                    <p>Machine Learning pipelines are built entirely on advanced applied physical sciences and numerical math:</p>
+                    <div class="math-block">
+                        W_new = W_old - (learning_rate * dLoss/dW)
+                    </div>
+                    <p>Gradient Vector minimization exploits multivariable calculus partial derivatives to track the path of steepest ascent/descent across high-dimensional tensor matrices.</p>
+                </div>
+            </div>
+
+            <!-- SHEET 5: Pages 9 & 10 (Takeaways & Back Cover) -->
+            <div class="page" id="p5" style="z-index: 1;">
+                <div class="front">
+                    <h2>8. Key Takeaways</h2>
+                    <p>This internship successfully bridged numerical modeling and automated feature extraction engineering frameworks.</p>
+                    <h3>Primary Milestones:</h3>
+                    <ul>
+                        <li>Built standard linear pipelines and multi-layer convolutional tensor shapes.</li>
+                        <li>Configured deep sequential networks for temporal analysis tracking.</li>
+                    </ul>
+                </div>
+                <div class="back" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+                    <h1>END OF PRESENTATION</h1>
+                    <p style="color: var(--neon-cyan);">Thank You for Reviewing My Work</p>
+                    <hr style="width:40%; border:0; height:1px; background:var(--neon-purple); margin:20px 0;">
+                    <p>Gauhati University Portfolio Platform</p>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <div class="control-bar">
-        <button class="nav-btn" id="prevBtn" disabled><i class="fas fa-chevron-left"></i> Previous</button>
-        <div class="status-indicator">Sheet <span id="sheetIndex">1</span> / 5</div>
-        <button class="nav-btn" id="nextBtn">Next <i class="fas fa-chevron-right"></i></button>
+    <!-- Nav Operational Overlays -->
+    <div class="controls">
+        <button class="btn-nav" id="prevBtn">PREVIOUS</button>
+        <button class="btn-nav" id="nextBtn">NEXT PAGE</button>
     </div>
 
     <script>
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const book = document.getElementById('presentationBook');
-        const sheetIndexIndicator = document.getElementById('sheetIndex');
-        const sheets = [ document.getElementById('sheet1'), document.getElementById('sheet2'), document.getElementById('sheet3'), document.getElementById('sheet4'), document.getElementById('sheet5') ];
-        
-        let currentSheet = 1;
-        const totalSheets = sheets.length;
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const book = document.getElementById("book");
 
-        prevBtn.addEventListener("click", () => {
-            if (currentSheet > 1) {
-                currentSheet--;
-                const active = sheets[currentSheet - 1];
-                active.classList.remove("flipped");
-                setTimeout(() => { active.style.zIndex = totalSheets - (currentSheet - 1); }, 100);
-                updateUI();
-            }
-        });
+        // References to sequential sheet wrappers
+        const pages = [
+            document.getElementById("p1"),
+            document.getElementById("p2"),
+            document.getElementById("p3"),
+            document.getElementById("p4"),
+            document.getElementById("p5")
+        ];
 
-        nextBtn.addEventListener("click", () => {
-            if (currentSheet < totalSheets + 1) {
-                const active = sheets[currentSheet - 1];
-                active.classList.add("flipped");
-                setTimeout(() => { active.style.zIndex = currentSheet; }, 300);
-                currentSheet++;
-                updateUI();
-            }
-        });
+        let currentLoc = 0;
+        const maxLoc = pages.length;
 
-        function updateUI() {
-            prevBtn.disabled = currentSheet === 1;
-            nextBtn.disabled = currentSheet === totalSheets + 1;
-            
-            if (currentSheet === 1) { book.style.transform = "translateX(0%)"; sheetIndexIndicator.innerText = "1"; }
-            else if (currentSheet === totalSheets + 1) { book.style.transform = "translateX(50%)"; sheetIndexIndicator.innerText = totalSheets; }
-            else { book.style.transform = "translateX(25%)"; sheetIndexIndicator.innerText = currentSheet - 1; }
-            
-            document.querySelectorAll('video').forEach(v => v.pause());
+        function openBook() {
+            book.style.transform = "translateX(0%)";
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') nextBtn.click();
-            else if (e.key === 'ArrowLeft') prevBtn.click();
-        });
+        function closeBook(isAtStart) {
+            if(isAtStart) {
+                book.style.transform = "translateX(50%)";
+            } else {
+                book.style.transform = "translateX(-50%)";
+            }
+        }
+
+        function goNextPage() {
+            if(currentLoc < maxLoc) {
+                if(currentLoc === 0) openBook();
+                
+                pages[currentLoc].classList.add("flipped");
+                // Dynamically balance 3D overlapping stack indices
+                pages[currentLoc].style.zIndex = currentLoc + 1;
+                
+                currentLoc++;
+                if(currentLoc === maxLoc) closeBook(false);
+            }
+        }
+
+        function goPrevPage() {
+            if(currentLoc > 0) {
+                if(currentLoc === maxLoc) openBook();
+                
+                currentLoc--;
+                pages[currentLoc].classList.remove("flipped");
+                
+                // Reset standard overlapping layer weights
+                pages[currentLoc].style.zIndex = maxLoc - currentLoc + 5;
+                
+                if(currentLoc === 0) closeBook(true);
+            }
+        }
+
+        nextBtn.addEventListener("click", goNextPage);
+        prevBtn.addEventListener("click", goPrevPage);
     </script>
 </body>
 </html>
