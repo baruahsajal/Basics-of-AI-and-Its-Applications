@@ -1,55 +1,126 @@
-// Mobile Navigation Toggle
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
+/**
+ * Sajal Baruah Portfolio Interactive Controller Engine
+ * Managed seamlessly for execution on GitHub Pages environment
+ */
 
-if (hamburger) {
-    hamburger.addEventListener('click', () => {
-        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-        navLinks.style.position = 'absolute';
-        navLinks.style.top = '100%';
-        navLinks.style.left = '0';
-        navLinks.style.right = '0';
-        navLinks.style.flexDirection = 'column';
-        navLinks.style.background = 'rgba(5, 5, 10, 0.95)';
-        navLinks.style.padding = '2rem';
-        navLinks.style.borderBottom = '1px solid rgba(255, 255, 255, 0.08)';
+document.addEventListener("DOMContentLoaded", () => {
+    initMobileNav();
+    initSmoothScrolling();
+    initScrollSkillsObserver();
+    initActiveNavHighlight();
+});
+
+/**
+ * Handles Responsive Mobile Navigation Toggle Logic
+ */
+function initMobileNav() {
+    const mobileMenuBtn = document.getElementById("mobile-menu");
+    const navLinksList = document.querySelector(".nav-links");
+
+    mobileMenuBtn.addEventListener("click", () => {
+        navLinksList.classList.toggle("active");
+        
+        // Swap icon between bars and close state
+        const icon = mobileMenuBtn.querySelector("i");
+        if (navLinksList.classList.contains("active")) {
+            icon.className = "fa-solid fa-xmark";
+        } else {
+            icon.className = "fa-solid fa-bars";
+        }
+    });
+
+    // Automatically collapse mobile menu when clean link item is selected
+    document.querySelectorAll(".nav-link").forEach(link => {
+        link.addEventListener("click", () => {
+            if (navLinksList.classList.contains("active")) {
+                navLinksList.classList.remove("active");
+                mobileMenuBtn.querySelector("i").className = "fa-solid fa-bars";
+            }
+        });
     });
 }
 
-// Smooth scroll for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+/**
+ * Custom High Performance Smooth Scrolling Navigation Framework
+ */
+function initSmoothScrolling() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                // Header offset margin calibration
+                const headerOffset = 90;
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
     });
-});
+}
 
-// Animate progress bars on scroll for the Skills section
-const observerOptions = {
-    threshold: 0.5
-};
+/**
+ * Intersection Observer Implementation for Skill Bar Dynamic Progression Scaling
+ */
+function initScrollSkillsObserver() {
+    const skillsSection = document.getElementById("skills");
+    const progressBars = document.querySelectorAll(".progress-bar");
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const progressBars = entry.target.querySelectorAll('.progress');
-            progressBars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 150);
-            });
-        }
+    const observerOptions = {
+        root: null, // Default viewport tracking
+        threshold: 0.25 // Trigger when 25% of container element becomes visible
+    };
+
+    const skillsObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Load and animate progress values safely
+                progressBars.forEach(bar => {
+                    const TargetPercentage = bar.getAttribute("data-progress");
+                    bar.style.width = TargetPercentage;
+                });
+                // Unobserve to maintain persistent animation states without reprocessing
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    if (skillsSection) {
+        skillsObserver.observe(skillsSection);
+    }
+}
+
+/**
+ * Handles Active Nav State Re-evaluation based on Scroll Position Coordinates
+ */
+function initActiveNavHighlight() {
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    window.addEventListener("scroll", () => {
+        let currentSectionId = "";
+        const scrollPosition = window.scrollY + 120; // Anchor offset boundary
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+
+            if (scrollPosition >= sectionTop && scrollPosition < (sectionTop + sectionHeight)) {
+                currentSectionId = section.getAttribute("id");
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove("active");
+            if (link.getAttribute("href") === `#${currentSectionId}`) {
+                link.classList.add("active");
+            }
+        });
     });
-}, observerOptions);
-
-document.querySelectorAll('.skill-card').forEach(card => {
-    observer.observe(card);
-});
+}
